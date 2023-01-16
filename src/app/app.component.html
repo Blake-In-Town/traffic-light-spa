@@ -1,10 +1,27 @@
 <div id="app-block">
   <div id="view">
-    <app-light *ngFor="let item of lights"></app-light>
+    <app-light *ngFor="let light of lights; index as i"
+      [index]="i"
+      [color]="light.color"
+      [time]="light.time || 1"
+      [orderSubject]="orderSubject"
+      (lightOff)="switchLight($event)"
+    ></app-light>
   </div>
   <div id="settings">
-    <label for="count">Количество цветов</label>
-    <input type="number" min="2" max="5" name="count" id="lights-count" [(ngModel)]="lightCount">
-    <button (click)="setLigthsCount(lightCount)">Задать количество</button>
+    <div>
+      <label for="count">Количество цветов</label>
+      <input type="number" min="2" max="5" name="count" id="lights-count" #lightsCountInput>
+      <button (click)="setLigthsCount()">Задать количество</button>
+    </div>
+    <div class="lightSettings" *ngFor="let light of lights; index as i">
+      <label for="lightcolor">Цвет фонаря {{i}}</label>
+      <input type="color" name="lightcolor" (change)="changeColor($event,  light)">
+      <label for="time"> Время фонаря {{i}} </label>
+      <input type="number" name="time" [(ngModel)]="light.time">
+    </div>
+    <label for="order">Порядок включения</label>
+    <input type="text" name="order" [(ngModel)]="order">
+    <button (click)="startTrafficLights()">Включить светофор</button>
   </div>
 </div>

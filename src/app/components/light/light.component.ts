@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-light',
@@ -7,9 +8,37 @@ import { Component, OnInit } from '@angular/core';
 })
 export class LightComponent implements OnInit {
 
-  constructor() { }
+  @Input() index: number = 0;
+  @Input() color: string = 'white';
+  @Input() time: number = 1;
+  @Input() orderSubject?: Subject<string>;
+  @Output() lightOff: EventEmitter<number> = new EventEmitter<number>()
+
+  public onSignal = false;
+
+  constructor(
+  ) { }
+
+  public turnOn() {
+    this.onSignal = true;
+    setTimeout(
+      () => {
+        this.turnOff();
+      }, this.time * 1000)
+  }
+
+  public turnOff() {
+    this.lightOff.emit(this.index);
+    this.onSignal = false;
+  }
 
   ngOnInit(): void {
+    this.orderSubject?.subscribe(
+      index => {
+        if (+index === this.index)
+          this.turnOn();
+      }
+    )
   }
 
 }

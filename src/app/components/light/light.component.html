@@ -1,3 +1,5 @@
-<div class="color-block">
-
+<div class="color-block"
+  [style.backgroundColor]="color"
+  [class]="onSignal ? 'active' : 'inactive'">
+  <span class="index"> {{index}} </span>
 </div>

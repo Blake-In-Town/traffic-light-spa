@@ -1,9 +1,16 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core'
+import { Observable, Subject } from 'rxjs'
 
 export interface Light {
   color: string,
   time?: number,
-}
+};
+
+const defaultLights: Light[] = [
+  { color: 'red', time: 3 },
+  { color: 'yellow', time: 3 },
+  { color: 'green', time: 3 },
+]
 
 @Component({
   selector: 'app-root',
@@ -11,17 +18,45 @@ export interface Light {
   styleUrls: ['./app.component.sass']
 })
 export class AppComponent implements OnInit{
-  title = 'traffic-light';
-  public lightCount: number = 2;
-  public lights: Light[] = [];
 
-  public setLigthsCount = (lightCount: number): void => {
-    this.lights = new Array<Light>(lightCount);
-    console.log('this.lights: ', this.lights);
+  @ViewChild('lightsCountInput')
+  private lightsCountInput!: ElementRef<HTMLInputElement>;
+  public orderSubject = new Subject<string>()
+  public lights: Light[] = []
+  public order = '012'
+
+  public setLigthsCount = (): void => {
+    if (this.lightsCountInput) {
+      let count = Number(this.lightsCountInput.nativeElement.value)
+      this.lights = []
+      for (let index = 0; index < count; index++) {
+        this.lights.push({ color: 'white', time: 1 })
+      }
+    } else {
+      this.lights = defaultLights
+    }
+  };
+
+  public changeColor(event: Event, light: Light) {
+    const target = event.target as HTMLInputElement
+    light.color = target.value || 'white'
+  };
+
+  public startTrafficLights() {
+    this.orderSubject.next(this.order[0])
   }
+
+  public switchLight(index: number) {
+    console.log('index: ', index)
+    let next = this.order.split('').findIndex( (item) => {item == index.toString() } )
+    console.log('next: ', next);
+    this.orderSubject.next(this.order[next])
+  }
+
+
 
   ngOnInit(): void {
-    this.setLigthsCount(this.lightCount)
-  }
+    this.setLigthsCount()
+  };
 }
 
