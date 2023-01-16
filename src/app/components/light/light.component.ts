@@ -20,6 +20,8 @@ export class LightComponent implements OnInit {
   ) { }
 
   public turnOn() {
+    console.log('turnOn: ');
+
     this.onSignal = true;
     setTimeout(
       () => {

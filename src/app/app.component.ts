@@ -23,7 +23,8 @@ export class AppComponent implements OnInit{
   private lightsCountInput!: ElementRef<HTMLInputElement>;
   public orderSubject = new Subject<string>()
   public lights: Light[] = []
-  public order = '012'
+  public orderString = '012';
+  public orderIndex = 0;
 
   public setLigthsCount = (): void => {
     if (this.lightsCountInput) {
@@ -43,14 +44,17 @@ export class AppComponent implements OnInit{
   };
 
   public startTrafficLights() {
-    this.orderSubject.next(this.order[0])
+    this.orderSubject.next(this.orderString[this.orderIndex])
   }
 
   public switchLight(index: number) {
-    console.log('index: ', index)
-    let next = this.order.split('').findIndex( (item) => {item == index.toString() } )
-    console.log('next: ', next);
-    this.orderSubject.next(this.order[next])
+    console.log('index: ', index);
+    if (this.orderIndex == this.orderString.length) {
+      this.orderSubject.complete()
+    } else {
+      ++this.orderIndex;
+      this.orderSubject.next(this.orderString[this.orderIndex]);
+    }
   }
 
 
