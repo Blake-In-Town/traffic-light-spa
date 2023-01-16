@@ -44,16 +44,20 @@ export class AppComponent implements OnInit{
   };
 
   public startTrafficLights() {
+    // this.orderSubject = new Subject<string>();
     this.orderSubject.next(this.orderString[this.orderIndex])
   }
 
   public switchLight(index: number) {
-    console.log('index: ', index);
+    console.log('app index: ', index);
+    console.log('app this.orderIndex: ', this.orderIndex);
     if (this.orderIndex == this.orderString.length) {
-      this.orderSubject.complete()
+      // this.orderSubject.complete()
+      this.orderIndex = 0;
     } else {
-      ++this.orderIndex;
+      console.log('this.orderString[this.orderIndex]: ', this.orderString[this.orderIndex]);
       this.orderSubject.next(this.orderString[this.orderIndex]);
+      ++this.orderIndex;
     }
   }
 

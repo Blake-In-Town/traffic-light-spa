@@ -20,8 +20,6 @@ export class LightComponent implements OnInit {
   ) { }
 
   public turnOn() {
-    console.log('turnOn: ');
-
     this.onSignal = true;
     setTimeout(
       () => {
@@ -37,8 +35,11 @@ export class LightComponent implements OnInit {
   ngOnInit(): void {
     this.orderSubject?.subscribe(
       index => {
+        console.log('index: ', index);
         if (+index === this.index)
           this.turnOn();
+
+
       }
     )
   }
