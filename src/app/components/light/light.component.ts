@@ -8,11 +8,11 @@ import { Subject } from 'rxjs';
 })
 export class LightComponent implements OnInit {
 
-  @Input() index: number = 0;
+  @Input() id?: string;
   @Input() color: string = 'white';
   @Input() time: number = 1;
   @Input() orderSubject?: Subject<string>;
-  @Output() lightOff: EventEmitter<number> = new EventEmitter<number>()
+  @Output() lightOff: EventEmitter<string> = new EventEmitter<string>()
 
   public onSignal = false;
 
@@ -21,6 +21,7 @@ export class LightComponent implements OnInit {
 
   public turnOn() {
     this.onSignal = true;
+    console.log('this.onSignal: ', this.onSignal);
     setTimeout(
       () => {
         this.turnOff();
@@ -28,20 +29,22 @@ export class LightComponent implements OnInit {
   }
 
   public turnOff() {
-    this.lightOff.emit(this.index);
+    this.lightOff.emit(this.id);
     this.onSignal = false;
   }
 
   ngOnInit(): void {
     this.orderSubject?.subscribe(
-      index => {
-        console.log('index: ', index);
-        if (+index === this.index)
+      id => {
+        console.log('index: ', id);
+        if (id === this.id)
           this.turnOn();
-
-
       }
     )
+  };
+
+  ngOnDestroy(): void {
+    this.orderSubject?.unsubscribe();
   }
 
 }
