@@ -30,4 +30,8 @@ export class LightSwitchService {
       this.focusIndex = 0;
     }
   }
+
+  public unsubscribe() {
+    this.subsription.unsubscribe();
+  }
 }

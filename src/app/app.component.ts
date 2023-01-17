@@ -9,9 +9,9 @@ export interface Light {
 };
 
 const defaultLights: Light[] = [
-  { id: "0", color: 'red', time: 3 },
-  { id: "1", color: 'yellow', time: 3 },
-  { id: "2", color: 'green', time: 3 },
+  { id: "0", color: 'red', time: 1 },
+  { id: "1", color: 'yellow', time: 1 },
+  { id: "2", color: 'green', time: 1 },
 ]
 
 @Component({
@@ -54,5 +54,9 @@ export class AppComponent implements OnInit{
   ngOnInit(): void {
     this.setLigthsCount()
   };
+
+  ngOnDestroy(): void {
+    this.orderSubject.unsubscribe();
+  }
 }
 
