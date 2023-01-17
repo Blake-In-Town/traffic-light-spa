@@ -1,5 +1,6 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core'
 import { Observable, Subject } from 'rxjs'
+import { LightSwitchService } from './services/light-switch.service';
 
 export interface Light {
   id: string,
@@ -20,12 +21,14 @@ const defaultLights: Light[] = [
 })
 export class AppComponent implements OnInit{
 
+  constructor(
+    private orderSubject: LightSwitchService
+  ) {}
+
   @ViewChild('lightsCountInput')
   private lightsCountInput!: ElementRef<HTMLInputElement>;
-  public orderSubject = new Subject<string>()
   public lights: Light[] = []
   public orderString = '012';
-  public orderIndex = 0;
 
   public setLigthsCount = (): void => {
     if (this.lightsCountInput) {
@@ -45,24 +48,8 @@ export class AppComponent implements OnInit{
   };
 
   public startTrafficLights() {
-    // this.orderSubject = new Subject<string>();
-    this.switchLight(this.orderString[this.orderIndex])
+    this.orderSubject.getOrder(this.orderString);
   }
-
-  public switchLight(index: string) {
-    console.log('app index: ', index);
-    console.log('app this.orderIndex: ', this.orderIndex);
-    if (this.orderIndex == this.orderString.length) {
-      // this.orderSubject.complete()
-      this.orderIndex = 0;
-    } else {
-      console.log('this.orderString[this.orderIndex]: ', this.orderString[this.orderIndex]);
-      this.orderSubject.next(this.orderString[this.orderIndex]);
-      ++this.orderIndex;
-    }
-  }
-
-
 
   ngOnInit(): void {
     this.setLigthsCount()

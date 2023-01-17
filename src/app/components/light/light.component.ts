@@ -1,5 +1,6 @@
 import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
-import { Subject } from 'rxjs';
+import { Subject, Subscription } from 'rxjs';
+import { LightSwitchService } from 'src/app/services/light-switch.service';
 
 @Component({
   selector: 'app-light',
@@ -11,12 +12,13 @@ export class LightComponent implements OnInit {
   @Input() id?: string;
   @Input() color: string = 'white';
   @Input() time: number = 1;
-  @Input() orderSubject?: Subject<string>;
-  @Output() lightOff: EventEmitter<string> = new EventEmitter<string>()
+
+  private subscription?: Subscription;
 
   public onSignal = false;
 
   constructor(
+    private orderSubject: LightSwitchService
   ) { }
 
   public turnOn() {
@@ -29,14 +31,13 @@ export class LightComponent implements OnInit {
   }
 
   public turnOff() {
-    this.lightOff.emit(this.id);
     this.onSignal = false;
+    this.orderSubject.switchLight()
   }
 
   ngOnInit(): void {
-    this.orderSubject?.subscribe(
+    this.subscription = this.orderSubject.getSubject().subscribe(
       id => {
-        console.log('index: ', id);
         if (id === this.id)
           this.turnOn();
       }
@@ -44,7 +45,7 @@ export class LightComponent implements OnInit {
   };
 
   ngOnDestroy(): void {
-    this.orderSubject?.unsubscribe();
+    this.subscription?.unsubscribe();
   }
 
 }
