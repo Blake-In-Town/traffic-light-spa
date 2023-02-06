@@ -1,6 +1,7 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core'
-import { Observable, Subject } from 'rxjs'
-import { LightSwitchService } from './services/light-switch.service';
+import { FormControl } from '@angular/forms'
+import { BehaviorSubject, Observable, Subject, Subscription } from 'rxjs'
+import { LightSwitchService } from './services/light-switch.service'
 
 export interface Light {
   id: string,
@@ -20,15 +21,19 @@ const defaultLights: Light[] = [
   styleUrls: ['./app.component.sass']
 })
 export class AppComponent implements OnInit{
+  sub: Subscription
 
   constructor(
     private orderSubject: LightSwitchService
   ) {}
 
+  public trafficControl: FormControl;
+  // ----------------------
+
   @ViewChild('lightsCountInput')
   private lightsCountInput!: ElementRef<HTMLInputElement>;
   public lights: Light[] = []
-  public orderString = '012';
+  public orderString = '012'
 
   public setLigthsCount = (): void => {
     if (this.lightsCountInput) {
@@ -47,16 +52,42 @@ export class AppComponent implements OnInit{
     light.color = target.value || 'white'
   };
 
+
+  public testObs?: Observable<number[]>
+
+  public testSubj = new BehaviorSubject<number[]>([])
+
   public startTrafficLights() {
-    this.orderSubject.getOrder(this.orderString);
+    this.orderSubject.getOrder(this.orderString)
+
+    this.testObs = this.testSubj
+    this.testSubj.next([1,2,3])
+    this.testObs.subscribe(
+      value => console.log('value: ', value)
+    )
   }
 
   ngOnInit(): void {
-    this.setLigthsCount()
+    this.setLigthsCount();
+
+    this.trafficControl = new FormControl();
+    this.sub = this.trafficControl.valueChanges.subscribe(
+      (value) => {
+        console.log('value: ', value);
+      }
+    )
+    console.log('this.trafficControl: ', this.trafficControl);
+
   };
+
+  ngAfterViewInit(): void {
+
+
+  }
 
   ngOnDestroy(): void {
     this.orderSubject.unsubscribe();
+    this.sub.unsubscribe
   }
 }
 

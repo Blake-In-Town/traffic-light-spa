@@ -1,0 +1,9 @@
+<div class="trafficlight" (click)="toogleDown()">
+  <div class="protector"></div>
+  <div class="protector"></div>
+  <div class="protector"></div>
+  <div class="bulb"
+    *ngFor="let color of _colors"
+    (click)="switchColor(color); $event.stopPropagation()"
+    [ngClass]="currentColor === color ? color : ''"></div>
+</div>

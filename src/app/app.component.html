@@ -23,3 +23,10 @@
     <button (click)="startTrafficLights()">Включить светофор</button>
   </div>
 </div>
+<hr>
+<div style="display: flex; justify-content: space-between;">
+  <app-traffic [formControl]="trafficControl"></app-traffic>
+  <div>
+    <h1 *ngIf="trafficControl.value === 'green'">GO</h1>
+  </div>
+</div>
